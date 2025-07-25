@@ -1,0 +1,90 @@
+import matplotlib.pyplot as plt
+import pandas as pd 
+
+# 1.
+days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+cases = [120, 150, 100, 180, 220, 160, 140]
+
+plt.figure(figsize=(8, 5))
+plt.plot(days, cases, marker='o', color='blue', linestyle='-', linewidth=2, markersize=8)
+plt.title('Daily COVID-19 Cases')
+plt.xlabel('Days')
+plt.ylabel("Number of cases")
+plt.grid(color='green', linestyle='--', linewidth=0.5)  # Add grid lines to the plot and customize their appearance
+plt.legend()
+plt.savefig("covid_cases.png")
+plt.show()
+
+
+# 2.
+
+# Bar data
+products = ['A', 'B', 'C', 'D']
+sales = [1500, 2300, 1800, 1200]
+
+# Pie data
+market_share = [35, 30, 20, 15]
+
+# Line data
+months = ['Jan', 'Feb', 'Mar', 'Apr']
+monthly_revenue = [4000, 4500, 4200, 4800]
+
+plt.figure(figsize=(15,5))
+plt.subplot(1, 3, 1)
+plt.bar(products, sales, color='skyblue')
+plt.title('Product Sales')
+plt.xlabel('Products')
+plt.ylabel('Units Sold')
+
+# 2. Pie Chart
+plt.subplot(1, 3, 2)
+plt.pie(market_share, labels=products, autopct='%1.1f%%', startangle=90)
+plt.title('Market Share Distribution')
+
+# 3. Lİne chart
+plt.subplot(1, 3, 3)
+plt.plot(months, monthly_revenue, marker='o', color='green')
+plt.title('Monthly revenue')
+plt.xlabel('Months')
+plt.ylabel('Revenue ($)')
+plt.grid(True)
+
+plt.tight_layout() # Adjust layout to prevent overlap
+plt.show()
+
+
+
+# 3.
+sales_data = [
+    ["Date",        "Customer", "Product",   "Quantity", "Price"],
+    ["2024-01-01",  "Alice",    "Laptop",    1,          1000],
+    ["2024-01-01",  "Bob",      "Mouse",     2,          25],
+    ["2024-01-02",  "Alice",    "Monitor",   1,          300],
+    ["2024-02-05",  "John",     "Laptop",    1,          1000],
+    ["2024-02-10",  "David",    "Mouse",     3,          25],
+    ["2024-03-15",  "Alice",    "Keyboard",  1,          75],
+    ["2024-03-20",  "Sara",     "Monitor",   2,          300],
+    ["2024-04-01",  "Bob",      "Laptop",    1,          1000],
+    ["2024-04-18",  "David",    "Keyboard",  2,          75],
+    ["2024-05-05",  "Sara",     "Mouse",     1,          25],
+    ["2024-05-12",  "John",     "Monitor",   1,          300],
+    ["2024-06-01",  "Alice",    "Laptop",    1,          1000],
+    ["2024-06-10",  "Sara",     "Monitor",   1,          300],
+]
+
+df = pd.DataFrame(sales_data[1:], columns=sales_data[0])
+df["Date"] = pd.to_datetime(df["Date"])
+df["Quantity"] = df["Quantity"].astype(int) # Convert Quantity to integer
+df["Price"] = df["Price"].astype(float) # Convert Price to float
+
+df["Total"] = df["Quantity"] * df["Price"]  # Calculate total sales for each transaction
+product_sales = df.groupby("Product")["Total"].sum() # Group by Product and sum Total sales
+customer_sales = df.groupby("Customer")["Total"].sum() # Group by Customer and sum Total sales
+product_qty = df.groupby("Product")["Quantity"].sum() # Group by Product and sum Quantity sold
+
+monthly_sales = df.resample("M", on="Date")["Total"].sum() # Resample to monthly frequency and sum Total sales
+monthly_sales.plot(kind="bar", title="Monthly Sales", xlabel="Month", ylabel="Total Sales")
+
+product_qty.sort_values(ascending=False).plot(kind="bar", title="Product Quantity Sold", xlabel="Product", ylabel="Quantity Sold")
+plt.ylabel("Quantity Sold")
+plt.show()
